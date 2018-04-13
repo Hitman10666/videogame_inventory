@@ -43,7 +43,7 @@ public class VideoGameInventory extends Application {
 	private RadioButton optUsed = new RadioButton("Used"); 
 	
 	// search textfield, label, and "Go" button
-//	private Label lblSearch = new Label();
+	private Label lblSearch = new Label("Search");
 	private TextField txtSearch = new TextField();
 	private Button btnGo = new Button("Go");
 	
@@ -51,17 +51,18 @@ public class VideoGameInventory extends Application {
 	private Button btnExit = new Button("Exit");
 	
 //	------------------------ Nodes for edit window ---------------------------
-	private TextField txtTitleInput = new TextField("Title");
-	private TextField txtPublisherInput = new TextField();
-	private TextField txtPrice = new TextField();
-	private TextField txtYear = new TextField();
+	private TextField txtTitleInput = new TextField("Title must be 30 characters"
+			+ " or less");
+	private TextField txtPublisherInput = new TextField("Publisher name");
+	private TextField txtPrice = new TextField("0.00");
+	private TextField txtYear = new TextField("2000");
 //	private TextField txtAmount = new TextField(); not sure what this field is
 	
 	private Label lblTitle = new Label("Title");
 	private Label lblUsed = new Label("Used?");
 	private Label lblYear = new Label("Year");
 	private Label lblPlatform = new Label("Platform");
-	private Label lblPrice = new Label("Price");
+	private Label lblPrice = new Label("Price: $");
 	private Label lblPublisher = new Label("Publisher");
 	
 	private RadioButton optYes = new RadioButton("Yes");
@@ -70,6 +71,7 @@ public class VideoGameInventory extends Application {
 	private ComboBox<Platform> cmbPlatform = new ComboBox<>();
 	
 	private Button btnBack = new Button("Back");
+	private Button btnSave = new Button("Save");
 	
 	
 	@Override
@@ -83,6 +85,7 @@ public class VideoGameInventory extends Application {
 		mainPane.getStyleClass().add("root");
 		mainPane.setPadding(new Insets(10));
 		
+		// File writing stuff, to be addressed later
 //		File gameFile = new File("data/GamesList.txt");
 //		PrintWriter fileOut = new PrintWriter(new BufferedWriter(new FileWriter(gameFile, false)));
 
@@ -108,10 +111,11 @@ public class VideoGameInventory extends Application {
 		optPublisher.setToggleGroup(searchGroup);
 		optUsed.setToggleGroup(searchGroup);
 
-		// Button labels
+		// Button text set
 		btnGo.setText("Go");
 		btnEdit.setText("Edit record");
 		btnExit.setText("Exit");
+		btnSave.setText("Save");
 		
 		// Handler for exit button
 		btnExit.setOnAction((ActionEvent e) -> {
@@ -128,33 +132,61 @@ public class VideoGameInventory extends Application {
 		secondPane.setHgap(10);
 		secondPane.setVgap(10);
 		
+//		secondPane.setGridLinesVisible(true);
+
+		// Creates 6 columns 50 pixels wide
+		for (int i = 0; i < 6; i++) {
+			ColumnConstraints column = new ColumnConstraints(50);
+			secondPane.getColumnConstraints().add(column);
+		}
+		
+		// Assigning yes/no for Used category options to toggle group
+		ToggleGroup yesNo = new ToggleGroup();
+		optYes.setToggleGroup(yesNo);
+		optNo.setToggleGroup(yesNo);
+		
 		GridPane.setConstraints(lblTitle,			0, 0);
 		GridPane.setConstraints(txtTitleInput,		1, 0, 2, 1);
 		GridPane.setConstraints(lblYear,			0, 1);
-		GridPane.setConstraints(txtYear,			1, 1);
+		GridPane.setConstraints(txtYear,			1, 1, 2, 1);
 		GridPane.setConstraints(lblPrice,			0, 2);
-		GridPane.setConstraints(txtPrice,			1, 2);
+		GridPane.setConstraints(txtPrice,			1, 2, 2, 1);
 		
-		GridPane.setConstraints(lblPublisher,		5, 0);
-		GridPane.setConstraints(txtPublisherInput,	6, 0);
-		GridPane.setConstraints(lblPlatform,		5, 1);
-		GridPane.setConstraints(cmbPlatform,		6, 1);
+		GridPane.setConstraints(lblPublisher,		4, 0, 2, 1);
+		GridPane.setConstraints(txtPublisherInput,	5, 0, 2, 1);
+		GridPane.setConstraints(lblPlatform,		4, 1, 2, 1);
+		GridPane.setConstraints(cmbPlatform,		5, 1, 2, 1);
 		GridPane.setConstraints(lblUsed,			5, 2);
 		GridPane.setConstraints(optYes,				6, 2);
-		GridPane.setConstraints(optNo,				7, 2);
-		GridPane.setConstraints(btnBack,			4, 4);
+		GridPane.setConstraints(optNo,				6, 3);
+		GridPane.setConstraints(btnBack,			4, 4, 2, 1);
+		GridPane.setConstraints(btnSave,			3, 4, 2, 1);
+
+		// Creating array with string values for enum names
+//		Platform[] vals = Platform.values();
+//		String[] platformArr =  new String[vals.length];
+//		for (int i = 0; i < vals.length; i++) {
+//			platformArr[i] = Platform.valueOf();
+//		}
+//		for(Platform v : Platform.values()){
+//		int i = 0;
+//		vals[i] = v;
+//		platformArr[i] = vals[i]
+//		i++;
+//		}
+//		cmbPlatform.getItems().addAll(platformArr); 
+		cmbPlatform.getItems().addAll(Platform.values()); // not right
+		// trying to figure out this enum/combobox shit is pissing me off
 		
-		// Adding enum values to dropdown menu
-		cmbPlatform.getItems().setAll(Platform.values()); // doesn't return string value
-		
-				secondPane.getChildren().addAll(lblTitle, txtTitleInput, 
-				txtPublisherInput, lblPrice, txtPrice, txtYear, lblUsed, optYes, 
-				optNo, lblPlatform, cmbPlatform, lblYear, lblPublisher, btnBack);
-		
+		secondPane.getChildren().addAll(lblTitle, txtTitleInput,
+				txtPublisherInput, lblPrice, txtPrice, txtYear, lblUsed, optYes,
+				optNo, lblPlatform, cmbPlatform, lblYear, lblPublisher, btnBack,
+				btnSave);
+
 //  ------------------------ End Stuff for edit window -------------------------
 
         Scene scene1 = new Scene(mainPane, 580, 500);
-		Scene scene2 = new Scene(secondPane,600, 250);
+		Scene scene2 = new Scene(secondPane, 490, 200);
 		
 		// Handler for Edit button
 		btnEdit.setOnAction((ActionEvent e) -> primaryStage.setScene(scene2));
@@ -191,7 +223,7 @@ public class VideoGameInventory extends Application {
 		searchPane.setHgap(10);
 		searchPane.setVgap(10);
 
-//		GridPane.setConstraints(lblSearch,		2, 1);
+		GridPane.setConstraints(lblSearch,		1, 1);
 		GridPane.setConstraints(txtSearch,		2, 1, 2, 1);
 		GridPane.setConstraints(btnGo,			4, 1);
 		GridPane.setConstraints(optTitle,		0, 2);
@@ -206,7 +238,7 @@ public class VideoGameInventory extends Application {
 		// width of search text bar
 		txtSearch.setMinWidth(200);
 
-		searchPane.getChildren().addAll(txtSearch, btnGo, optTitle, 
+		searchPane.getChildren().addAll(lblSearch, txtSearch, btnGo, optTitle, 
 				optPlatform, optYear, optPublisher, optPrice, optUsed, btnEdit, 
 				btnExit);
 
