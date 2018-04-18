@@ -10,6 +10,8 @@ Other Files in this Project:
 package prog24178.javafx;
 
 import java.util.ArrayList;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * This class represents a list of video games, as an ArrayList. It is a
@@ -24,7 +26,7 @@ import java.util.ArrayList;
  */
 public class GameList extends ArrayList<Game> {
 
-	private ArrayList<Game> gameList = new ArrayList();
+	private ObservableList<Game> gameList = FXCollections.observableArrayList();
 
 	/**
 	 * Default GameList constructor
@@ -177,4 +179,12 @@ public class GameList extends ArrayList<Game> {
 		return searchResults;
 	}
 
+	 /**
+     * Returns the data as an observable list of Games. 
+     * @return ObservableList of Game objects
+     */
+    public ObservableList<Game> getPersonData() {
+        return gameList;
+    }
+	
 }
