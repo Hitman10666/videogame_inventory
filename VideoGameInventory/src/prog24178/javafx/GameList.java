@@ -22,13 +22,12 @@ import java.util.ArrayList;
  * @author Viktor Langeryt
  * @author Robert Verdi
  */
-public class GameList {
+public class GameList extends ArrayList<Game> {
 
 	private ArrayList<Game> gameList = new ArrayList();
 
 	/**
 	 * Default GameList constructor
-	 *
 	 */
 	public GameList() {
 	}
@@ -36,9 +35,12 @@ public class GameList {
 	/**
 	 * Constructor that accepts a variable list of Game objects.
 	 *
-	 * @param g Game object(s)
+	 * @param game game objects
 	 */
-	public GameList(Game... g) {
+    public GameList (Game...game){
+        for(Game e: game){
+            this.add(e);
+        }
 	}
 	
 	/**
@@ -67,6 +69,7 @@ public class GameList {
 	 * @throws IndexOutOfBoundsException if the given index is not in bounds of
 	 * the current array list.
 	 */
+	@Override
 	public Game get(int index) {
 		if (index >= 0 && index < gameList.size()) {
 			return gameList.get(index);
@@ -77,31 +80,37 @@ public class GameList {
 	}
 
 	/**
-	 * Replaces an already existing Game object in the list with another.
+	 * Adds a game into the list. If it is being put into an index that is 
+	 * occupied already, the other objects will be pushed down an index, and it 
+	 * will be added in the created slot.
 	 *
-	 * @param index the index of the Game to be replaced
+	 * @param index the index of the Game to be added
 	 * @param g the Game object to be placed at the specified index.
 	 * @throws IndexOutOfBoundsException if the index does not already exist in
 	 * the array list.
 	 */
-	public void set(int index, Game g) {
+	/* Replaced the "set" method, since this lets the "add" method in ArrayList
+	* be overridden. 
+	*/
+	@Override
+	public void add(int index, Game g) {
 		if (index > 0 && index < gameList.size()) {
-			gameList.set(index, g);
+			gameList.add(index, g);
 		} else {
 			throw new IndexOutOfBoundsException("Error: The index does not "
 					+ "exist in the array list yet");
 		}
 	}
 
-	/**
-	 * Adds a Game object to the ArrayList.
-	 *
-	 * @param g the Game object to add to the list.
-	 */
-	public void add(Game g) {
-		// rough method
-		gameList.add(g);
-	}
+//	/** Don't think we need this
+//	 * Adds a Game object to the ArrayList.
+//	 *
+//	 * @param g the Game object to add to the list.
+//	 */
+//	public boolean add(Game g) {
+//		// rough method
+//		gameList.add(g);
+//	}
 
 	/**
 	 * Removes from the list a Game object at a specified index.
@@ -109,14 +118,19 @@ public class GameList {
 	 * @param index index in the list of the Game object to be removed.
 	 * @throws IndexOutOfBoundsException when the given index is not in bounds
 	 * of the current the array list
+	 * @return the removed Game object
 	 */
-	public void remove(int index) {
+	@Override
+	public Game remove(int index) {
+		Game removedGame = gameList.get(index);
 		if (index >= 0 && index < gameList.size()) {
 			gameList.remove(index);
+			return removedGame;
 		} else {
 			throw new IndexOutOfBoundsException("Error: Index not found in "
 					+ "bounds of the current array list.");
 		}
+	
 	}
 
 	/**
@@ -145,6 +159,8 @@ public class GameList {
 	 *
 	 * @return the size of the list of games.
 	 */
+
+	@Override
 	public int size() {
 		return gameList.size();
 	}
