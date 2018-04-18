@@ -10,6 +10,8 @@
 package prog24178.javafx;
 
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.event.*;
 import javafx.geometry.Insets;
@@ -86,8 +88,23 @@ public class VideoGameInventory extends Application {
 		mainPane.setPadding(new Insets(10));
 		
 		// File writing stuff, to be addressed later
-//		File gameFile = new File("data/GamesList.txt");
+		File gameFile = new File("data/GamesList.dat");
 //		PrintWriter fileOut = new PrintWriter(new BufferedWriter(new FileWriter(gameFile, false)));
+		
+		// An instance of GameList, using the class, not a plain old array
+		GameList gameList = new GameList();
+
+		// Array of Game objects
+		Game[] listOfGames = new Game[10];
+		
+		/* I think this takes the file contents and writes them to the array 
+		(not ArrayList) */
+		try (ObjectInputStream in = new ObjectInputStream(new FileInputStream
+		(gameFile))) {
+			for (int dex = 0; dex < listOfGames.length; dex++) {
+				listOfGames[dex] = (Game) in.readObject();
+			}
+		}
 
 //	---------------------- Stuff for main window ------------------------------- 
 		// Columns for list display table
@@ -117,9 +134,20 @@ public class VideoGameInventory extends Application {
 		btnExit.setText("Exit");
 		btnSave.setText("Save");
 		
-		// Handler for exit button
+		/* Handler for exit button, I think the weird bit inside makes it write
+		*  the array contents to the file when the exit button is closed.
+		*/
 		btnExit.setOnAction((ActionEvent e) -> {
-			System.exit(0);
+			try (ObjectOutputStream out = new ObjectOutputStream
+		(new FileOutputStream(gameFile))) {
+				for (int dex = 0; dex < gameList.size(); dex++) {
+					out.writeObject(gameList.get(dex));
+					System.exit(0);
+				}
+			}		catch (IOException ex) {
+						Logger.getLogger(VideoGameInventory.class.getName())
+								.log(Level.SEVERE, null, ex);
+					}
 		});
 		
 		// adding pieces to main pane
@@ -201,6 +229,7 @@ public class VideoGameInventory extends Application {
 		primaryStage.setResizable(false); // window not resizable
         primaryStage.show();
     }
+
 	// end of start method
 	
     /**
