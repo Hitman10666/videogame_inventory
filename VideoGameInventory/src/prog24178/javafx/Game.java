@@ -9,6 +9,11 @@ Other Files in this Project:
 
 package prog24178.javafx;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 /**
  * This class represents a video game which has a number of attributes 
  * associated with it.
@@ -16,10 +21,11 @@ package prog24178.javafx;
  * @author Robert Verdi
  * @author Viktor Langeryt
  */
-public class Game {
+public class Game implements Serializable {
 
 	// Fields for records
 	private String title = "TBA";
+	private String publisher = "Unknown";
 	private Platform system;
 	private int releaseYear = 2010;
 	private double price = 0.0;
@@ -34,27 +40,26 @@ public class Game {
 	*/
 
 	public Game() {
-//		this.title = title;
-//		this.system = system; // not sure this shit is needed
-//		this.releaseYear = releaseYear;
-//		this.stockLevel = stockLevel;
-//		this.used = used;
+		// invoking all argument constructor
+		this("TBD", "Unknown", Platform.XBOX360, 2010, 1.00, 0, true);
 	}
 
 	/**
 	 * Constructor that accepts various aspects of a video game.
 	 * 
-	 * @param title title of the game, as a string, max 30 characters
+	 * @param title The title of the game, as a string, max 30 characters
+	 * @param publisher The publisher of the game as a string, max 30 characters
 	 * @param system the platform which the game is on
 	 * @param releaseYear the year of release for the game
 	 * @param price current price of the game
 	 * @param stockLevel quantity in stock
 	 * @param used yes if the game is used, no if it's new
 	 */
-	public Game(String title, Platform system, int releaseYear, double price,
+	public Game(String title, String publisher, Platform system, int releaseYear, double price,
 			int stockLevel, boolean used) {
 
 		setTitle(prepStringField(title, SIZE_TITLE));
+		setPublisher(publisher);
 		setPlatform(system);
 		setReleaseYear(releaseYear);
 		setPrice(price);
@@ -82,6 +87,29 @@ public class Game {
 			throw new IllegalArgumentException("Error: Title cannot be blank");
 		} else {
 			this.title = title;
+		}
+	}
+  
+  /**
+	 * Retrieves the publisher of the game.
+	 * 
+	 * @return the publisher of the game, as a string
+	 */
+	public String getPublisher() {
+		return publisher;
+	}
+
+	/**
+	 * Sets the publisher of the game. Will be run through the string prepper method
+	 * in order to truncate it to 30 characters.
+	 * 
+	 * @param publisher the publisher of the game, as a string
+	 */
+	public void setPublisher(String publisher) {
+		if (publisher.isEmpty()) {
+			throw new IllegalArgumentException("Error: Publisher cannot be blank");
+		} else {
+			this.publisher = publisher;
 		}
 	}
 
@@ -216,15 +244,47 @@ public class Game {
 	}
 
 	/**
+	 * Allows the reading of a Game object for filing purposes
+	 * 
+	 * @param aInputStream an input stream
+	 * @throws ClassNotFoundException 
+	 * @throws IOException 
+	 */
+	private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
+		title = aInputStream.readUTF();
+		publisher = aInputStream.readUTF();
+//		system = aInputStream.readUTF(getClass(system)); still don't know how to deal with this enum shit
+		releaseYear = aInputStream.readInt();
+		stockLevel = aInputStream.readInt();
+		price = aInputStream.readDouble();
+		used = aInputStream.readBoolean();
+	}
+
+	/**
+	 * Allows the writing of a Game object for filing purposes
+	 * 
+	 * @param aOutputStream the output stream
+	 * @throws IOException 
+	 */
+	private void writeObject(ObjectOutputStream aOutputStream) throws IOException {
+		aOutputStream.writeUTF(title);
+		aOutputStream.writeUTF(publisher);
+//      aOutputStream.writeUTF(system); again with the enum shit
+		aOutputStream.writeInt(releaseYear);
+		aOutputStream.writeDouble(price);
+		aOutputStream.writeInt(stockLevel);
+		aOutputStream.writeBoolean(used);
+	}
+
+	/**
 	 * Returns a string representation of the video game
 	 * 
 	 * @return string representation of video game
 	 */
 	@Override
 	public String toString() {
-		return String.format("Title: %s\nPlatform: \nRelease Year: %d\nPrice: "
-				+ "%f\nAmmount "
-				+ "in Stock: %d\nUsed: %b", title, releaseYear, price,
+		return String.format("Title: %s\nPublisher: %s\nPlatform: \nRelease Year: %d\nPrice: "
+				+ "%f\nAmmount in Stock: %d\nUsed: %b", title, publisher, releaseYear, price,
 				stockLevel, used);
 	}
 }
