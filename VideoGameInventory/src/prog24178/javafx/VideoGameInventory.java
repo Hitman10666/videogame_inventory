@@ -5,7 +5,8 @@
 
  * This is a program that will allow a store owner to maintain an inventory of 
  * video games. They will be organized by title, platform, year made, price, 
- * publisher, and whether the game in inventory is a used or new game.
+ * publisher, stock level, and whether the game in inventory is a used or new 
+ * game.
  */
 package prog24178.javafx;
 
@@ -62,6 +63,7 @@ public class VideoGameInventory extends Application {
 	
 	private Button btnEdit = new Button("Edit");
 	private Button btnExit = new Button("Exit");
+	private Button btnNew = new Button("New");
 	
 	private Label lblTitle = new Label("Title");
 	private Label lblUsed = new Label("Used?");
@@ -203,20 +205,13 @@ public class VideoGameInventory extends Application {
         Scene scene1 = new Scene(mainPane, 1080, 500);
 		Scene scene2 = new Scene(editWindow, 490, 200);
 		
-		// Handler for Edit button
-		btnEdit.setOnAction((ActionEvent e) -> primaryStage.setScene(scene2));
-		
-				// Handler for Back button
-//		btnBack.setOnAction((ActionEvent e) -> primaryStage.setScene(scene1));
-		
 		// Handler for New button
-//		btnNew.setOnAction((ActionEvent e) -> )
+		btnNew.setOnAction((ActionEvent e) -> primaryStage.setScene(scene2));
 		
 		/* Handler for delete button, uses the currently selected record in the 
 		table to delete based on it's index in the list, we still need to add 
 		a dialog for confirmation */
 		btnDelete.setOnAction((ActionEvent e) -> {
-
 			if ((listTable.getSelectionModel().
 					getSelectedIndex()) >= 0) {
 				listTable.getItems().remove(listTable.getSelectionModel().
@@ -228,11 +223,13 @@ public class VideoGameInventory extends Application {
 				alert.setTitle("No Selection");
 				alert.setHeaderText("No game is selected");
 				alert.setContentText("Can't delete, no selected game.");
-
 				alert.showAndWait();
 			}
 		}
 		);
+		
+		// Handler for Edit button
+		btnEdit.setOnAction((ActionEvent e) -> primaryStage.setScene(scene2));
 
 // ---------------------- Stuff for Edit Window --------------------------------
 	
@@ -241,8 +238,7 @@ public class VideoGameInventory extends Application {
 			"Playstation 3", "Playstation 4", "PC", "Nintendo Switch",
 			"Nintendo Wii", "Nintendo Wii-U", "Nintendo 3DS"};
 		cmbPlatformEditWindow.getItems().addAll(platformArrayEditWindow);
-		
-		
+			
 		GridPane.setConstraints(lblTitleEditWindow,			0, 0);
 		GridPane.setConstraints(txtTitleInput,				1, 0, 2, 1);
 		GridPane.setConstraints(lblYearEditWindow,			0, 1);
@@ -369,6 +365,7 @@ public class VideoGameInventory extends Application {
 		
 		GridPane.setConstraints(btnEdit,		2, 3);
 		GridPane.setConstraints(btnExit,		3, 3);
+		GridPane.setConstraints(btnNew,			4, 3);
 		
 		// width of search text bar
 		txtSearch.setMinWidth(200);
@@ -439,7 +436,6 @@ public class VideoGameInventory extends Application {
 				lblPlatformDisplay, lblYear, lblYearDisplay, lblPublisher, 
 				lblPublisherDisplay, btnSave, btnDelete);
 
-	
 	return rightPane;
 	}
 }
